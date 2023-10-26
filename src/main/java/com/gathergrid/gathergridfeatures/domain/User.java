@@ -44,6 +44,22 @@ public class User {
         this.password = password;
     }
 
+    public User(long id, String firstName, String lastName, String email, String password) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public List<Event> getEvents() {
         return events;
     }
@@ -86,10 +102,6 @@ public class User {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
-    }
-
-    public long getId() {
-        return id;
     }
 
     public String getFirstName() {

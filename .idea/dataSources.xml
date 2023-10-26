@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="featuresdb@localhost" uuid="6e766e3a-d633-497c-9e25-0c5106520dd0">
+    <data-source source="LOCAL" name="featuresdb@localhost" uuid="c289159d-c8ed-4189-8075-df6f6a8f72a5">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost:3307/featuresdb</jdbc-url>
+      <jdbc-url>jdbc:mysql://localhost:3306/featuresdb</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

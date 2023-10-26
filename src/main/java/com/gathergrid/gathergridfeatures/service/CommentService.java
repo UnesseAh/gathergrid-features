@@ -29,13 +29,14 @@ public class CommentService {
         }
         throw new Exception("this user is not same user who create this comment");
     }
-        public void deleteComment(Long comment_id,Long user_id) throws Exception {
-            Comment exestingComment = commentRepositry.findById(comment_id);
-            if(exestingComment.getUser().getId() == user_id){
-                commentRepositry.delete(comment_id);
-            }
+    public void deleteComment(Long comment_id,Long user_id) throws Exception {
+        Comment exestingComment = commentRepositry.findById(comment_id);
+        if(exestingComment.getUser().getId() == user_id){
+            commentRepositry.delete(comment_id);
+        }else {
             throw new Exception("this user is not same user who create this comment");
         }
+    }
     private void validate(Comment comment){
         if(comment.getText().isBlank() || comment.getUser() == null || comment.getEvent() == null){
             throw new IllegalArgumentException("All fields is needed");
