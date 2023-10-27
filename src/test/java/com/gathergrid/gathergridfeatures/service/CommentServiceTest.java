@@ -26,9 +26,9 @@ class CommentServiceTest {
 
     @BeforeEach
     void setup(){
-        commentRepository = Mockito.mock(CommentRepositryImpl.class);
         eventRepository = Mockito.mock(EventRepositoryImpl.class);
         eventService = new EventService(eventRepository);
+        commentRepository = Mockito.mock(CommentRepositryImpl.class);
         commentService = new CommentService(commentRepository, eventService);
     }
 
@@ -111,7 +111,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void testEventExistWhenGettingComments(){
+    void testEventExistWhenGettingItsComments(){
         List<Comment> comments = new ArrayList<>();
         comments.add(new Comment("comment1", 10));
         comments.add(new Comment("comment2", 10));
@@ -138,11 +138,34 @@ class CommentServiceTest {
     }
 
     @Test
-    public void testUpdateComment() throws Exception {
-        Comment comment = new Comment();
+    public void testFindCommentWhenUpdatingComment(){
+        Comment comment = new Comment("comment",10);
         comment.setId(1L);
-        comment.setText("Comment");
-        comment.setRating(5);
+        comment.setEvent(new Event("name",LocalDateTime.now(),"address", "description"));
+        comment.setUser(new User("firstname","lastname","yns@gmail.com","password"));
+
+        Mockito.when(commentRepository.findById(comment.getId())).thenReturn(null);
+
+        assertThrows(NoSuchElementException.class,()->commentService.updateComment(comment),"Comment doesn't exist!");
+    }
+
+    @Test
+    public void testIfCommentUsersMatchesWhenUpdatingComment() {
+        Comment comment = new Comment("comment",10);
+        comment.setId(1L);
+        comment.setEvent(new Event("name",LocalDateTime.now(),"address", "description"));
+        comment.setUser(new User("firstname","lastname","yns@gmail.com","password"));
+
+        Mockito.when(commentRepository.findById(2L)).thenReturn(comment);
+
+        assertThrows(Exception.class, () -> commentService.updateComment(comment),"Users of the comments don't match");
+        Mockito.verify(commentRepository).findById(comment.getId());
+    }
+
+    @Test
+    public void testUpdateComment() throws Exception {
+        Comment comment = new Comment("text",10);
+        comment.setId(1L);
         comment.setEvent(new Event("EVENT-NAME", LocalDateTime.now(),"ADDRESS","A short description"));
         comment.setUser(new User(1L,"Youness","AHASLA","youness@gmail.com", "123456789"));
 
@@ -151,7 +174,31 @@ class CommentServiceTest {
 
         Comment result = commentService.updateComment(comment);
         assertEquals(comment, result);
+    }
 
+    @Test
+    public void testFindCommentWhenDeletingComment(){
+        Comment comment = new Comment("comment",10);
+        comment.setId(1L);
+        comment.setEvent(new Event("name",LocalDateTime.now(),"address", "description"));
+        comment.setUser(new User("firstname","lastname","yns@gmail.com","password"));
+
+        Mockito.when(commentRepository.findById(comment.getId())).thenReturn(null);
+
+        assertThrows(NoSuchElementException.class,()->commentService.deleteComment(comment.getId(), 1L),"Comment doesn't exist!");
+    }
+
+    @Test
+    public void testIfCommentBelongsToUserWhenDeletingComment() {
+        Comment comment = new Comment("comment",10);
+        comment.setId(1L);
+        comment.setEvent(new Event("name",LocalDateTime.now(),"address", "description"));
+        comment.setUser(new User(1,"firstname","lastname","yns@gmail.com","password"));
+
+        Mockito.when(commentRepository.findById(1L)).thenReturn(comment);
+
+        assertThrows(Exception.class, () -> commentService.deleteComment(comment.getUser().getId(),2L),"Users of the comments don't match");
+        Mockito.verify(commentRepository).findById(comment.getId());
     }
 
     @Test

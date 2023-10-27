@@ -33,18 +33,26 @@ public class CommentService {
     public Comment updateComment(Comment comment) throws Exception {
         validate(comment);
         Comment exestingComment = commentRepositry.findById(comment.getId());
-        if(exestingComment.getUser().getId() == comment.getUser().getId()){
-            return commentRepositry.update(comment);
-        }
-        throw new Exception("this user is not same user who create this comment");
+        if(exestingComment != null){
+            if(exestingComment.getUser().getId() == comment.getUser().getId()){
+                return commentRepositry.update(comment);
+            }else
+                throw new Exception("This user is not the same user who create this comment");
+        }else
+            throw new NoSuchElementException("Comment with ID: " + comment.getId() + " doesn't exist");
     }
+
     public void deleteComment(Long comment_id,Long user_id) throws Exception {
         Comment exestingComment = commentRepositry.findById(comment_id);
-        if(exestingComment.getUser().getId() == user_id){
-            commentRepositry.delete(comment_id);
-        }else {
-            throw new Exception("this user is not same user who create this comment");
-        }
+        if(exestingComment != null){
+            if(exestingComment.getUser().getId() == user_id){
+                commentRepositry.delete(comment_id);
+            }else {
+                throw new Exception("this user is not same user who create this comment");
+            }
+        }else
+            throw new NoSuchElementException("Comment with id : " + comment_id + " doesn't exist!");
+
     }
     private void validate(Comment comment){
         if (comment.getEvent() == null || comment.getEvent().equals(new Event())){
