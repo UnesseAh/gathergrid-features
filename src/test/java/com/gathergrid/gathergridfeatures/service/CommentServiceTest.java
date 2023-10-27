@@ -5,7 +5,9 @@ import com.gathergrid.gathergridfeatures.domain.Event;
 import com.gathergrid.gathergridfeatures.domain.User;
 import com.gathergrid.gathergridfeatures.repository.interfacesImpl.CommentRepositryImpl;
 import com.gathergrid.gathergridfeatures.repository.interfacesImpl.EventRepositoryImpl;
+import jdk.jfr.Description;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -33,46 +35,45 @@ class CommentServiceTest {
     }
 
     @Test
+    @DisplayName("Test if event exists when saving comment")
+    @Description("This test verifies that an exception is thrown when saving a comment without an associated event.")
     void testEventDoesExistWhenSavingComment(){
         Comment comment = new Comment("comment", 5);
         comment.setUser(new User());
 
-        Comment comment2 = new Comment("comment", 5);
-        comment2.setId(1L);
-
-        Mockito.when(commentRepository.save(comment)).thenReturn(comment2);
+        Mockito.when(commentRepository.save(comment)).thenReturn(comment);
 
         assertThrows(IllegalArgumentException.class,() -> commentService.createComment(comment),"Event must not be null");
     }
 
     @Test
+    @DisplayName("Test if user exists when saving comment")
+    @Description("This test verifies that an exception is thrown when saving a comment without an associated user.")
     void testUserDoesExistWhenSavingComment(){
         Comment comment = new Comment("comment", 5);
         comment.setEvent(new Event());
 
-        Comment comment2 = new Comment("comment", 5);
-        comment2.setId(1L);
-
-        Mockito.when(commentRepository.save(comment)).thenReturn(comment2);
+        Mockito.when(commentRepository.save(comment)).thenReturn(comment);
 
         assertThrows(IllegalArgumentException.class,() -> commentService.createComment(comment), "User does not exist");
     }
 
     @Test
+    @DisplayName("Test if event is not null when saving comment")
+    @Description("This test verifies that an exception is thrown when saving a comment with an empty event.")
     void testEventIsNotNullWhenSavingComment(){
         Comment comment = new Comment("comment", 5);
         comment.setUser(new User());
         comment.setEvent(new Event());
 
-        Comment comment2 = new Comment("comment", 5);
-        comment2.setId(1L);
-
-        Mockito.when(commentRepository.save(comment)).thenReturn(comment2);
+        Mockito.when(commentRepository.save(comment)).thenReturn(comment);
 
         assertThrows(IllegalArgumentException.class, () -> commentService.createComment(comment), "Event is empty");
     }
 
     @Test
+    @DisplayName("Test if text is not blank when saving comment")
+    @Description("This test verifies that an exception is thrown when saving a comment with an empty text.")
     void testTextIsNotBlankWhenSavingComment(){
         Comment comment = new Comment("", 10);
 
@@ -82,6 +83,8 @@ class CommentServiceTest {
     }
 
     @Test
+    @DisplayName("Test if text is safe when saving comment")
+    @Description("This test verifies that an exception is thrown when saving a comment containing unsafe characters.")
     void testTextIsSafeWhenSavingComment(){
         Comment comment = new Comment("<text>", 5);
 
@@ -91,6 +94,8 @@ class CommentServiceTest {
     }
 
     @Test
+    @DisplayName("Test if rating is within valid range when saving comment")
+    @Description("This test verifies that an exception is thrown when saving a comment with a rating outside the valid range (1-10).")
     void testRatingIsLessThanTenAndMoreThanZeroWhenSavingComment(){
         Comment comment = new Comment("text", 11);
 
@@ -100,6 +105,8 @@ class CommentServiceTest {
     }
 
     @Test
+    @DisplayName("Test creating a comment")
+    @Description("This test verifies the successful creation of a comment.")
     void testCreateComment(){
         Comment comment = new Comment("text", 10);
         comment.setEvent(new Event("name",LocalDateTime.now(),"address", "description"));
@@ -111,6 +118,8 @@ class CommentServiceTest {
     }
 
     @Test
+    @DisplayName("Test if event exists when getting its comments")
+    @Description("This test verifies that an exception is thrown when trying to retrieve comments for a non-existing event.")
     void testEventExistWhenGettingItsComments(){
         List<Comment> comments = new ArrayList<>();
         comments.add(new Comment("comment1", 10));
@@ -123,6 +132,8 @@ class CommentServiceTest {
     }
 
     @Test
+    @DisplayName("Test list comments for an event")
+    @Description("This test verifies the successful retrieval of comments for an event.")
     public void testListComment(){
         Long eventId = 1L;
         List<Comment> outputComments = new ArrayList<>();
@@ -138,6 +149,8 @@ class CommentServiceTest {
     }
 
     @Test
+    @DisplayName("Test finding comment when updating comment")
+    @Description("This test verifies that an exception is thrown when trying to update a non-existing comment.")
     public void testFindCommentWhenUpdatingComment(){
         Comment comment = new Comment("comment",10);
         comment.setId(1L);
@@ -150,6 +163,8 @@ class CommentServiceTest {
     }
 
     @Test
+    @DisplayName("Test if comment users match when updating comment")
+    @Description("This test verifies that an exception is thrown when trying to update a comment where the users don't match.")
     public void testIfCommentUsersMatchesWhenUpdatingComment() {
         Comment comment = new Comment("comment",10);
         comment.setId(1L);
@@ -163,6 +178,8 @@ class CommentServiceTest {
     }
 
     @Test
+    @DisplayName("Test updating a comment")
+    @Description("This test verifies the successful update of a comment.")
     public void testUpdateComment() throws Exception {
         Comment comment = new Comment("text",10);
         comment.setId(1L);
@@ -177,6 +194,8 @@ class CommentServiceTest {
     }
 
     @Test
+    @DisplayName("Test finding comment when deleting comment")
+    @Description("This test verifies that an exception is thrown when trying to delete a non-existing comment.")
     public void testFindCommentWhenDeletingComment(){
         Comment comment = new Comment("comment",10);
         comment.setId(1L);
@@ -189,6 +208,8 @@ class CommentServiceTest {
     }
 
     @Test
+    @DisplayName("Test if comment belongs to user when deleting comment")
+    @Description("This test verifies that an exception is thrown when trying to delete a comment that doesn't belong to the user.")
     public void testIfCommentBelongsToUserWhenDeletingComment() {
         Comment comment = new Comment("comment",10);
         comment.setId(1L);
@@ -202,6 +223,8 @@ class CommentServiceTest {
     }
 
     @Test
+    @DisplayName("Test deleting a comment")
+    @Description("This test verifies the successful deletion of a comment.")
     public void testDeleteComment() throws Exception{
         User user = new User(1L, "Youness", "AHASLA", "youness@gmail.com","123456789");
         Comment comment = new Comment();
