@@ -60,7 +60,11 @@ public class pagesServlet extends HttpServlet {
                 this.getServletContext().getRequestDispatcher("/WEB-INF/homeUser.jsp").forward(request, response);
                 break;
             case "/reservation":
-                ValidationReservation(request, response);
+                try {
+                    ValidationReservation(request, response);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             case "/showEvent":
                 String Id = request.getParameter("id");
@@ -95,7 +99,7 @@ public class pagesServlet extends HttpServlet {
             request.getServletContext().getRequestDispatcher("signin");
         }
     }
-    public void ValidationReservation(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void ValidationReservation(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String vipParam = request.getParameter("vip");
         String standardParam = request.getParameter("Standard");
         String id = request.getParameter("idEvent");
@@ -138,7 +142,7 @@ public class pagesServlet extends HttpServlet {
         }
     }
 
-    private void checkTicketTypeAndSave(int numStandard,int numVip,Ticket Vip, Ticket Standard , HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void checkTicketTypeAndSave(int numStandard,int numVip,Ticket Vip, Ticket Standard , HttpServletRequest request, HttpServletResponse response) throws Exception {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         //check date
