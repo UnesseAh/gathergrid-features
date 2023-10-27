@@ -20,10 +20,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CommentServiceTest {
 
-    private CommentService commentService;
-    private CommentRepositryImpl commentRepository;
-    private EventService eventService;
-    private EventRepositoryImpl eventRepository;
+    private static CommentService commentService;
+    private static CommentRepositryImpl commentRepository;
+    private static EventService eventService;
+    private static EventRepositoryImpl eventRepository;
 
 
     @BeforeEach
@@ -35,9 +35,9 @@ class CommentServiceTest {
     }
 
     @Test
-    @DisplayName("Test if event exists when saving comment")
+    @DisplayName("Test if event is not null when saving comment")
     @Description("This test verifies that an exception is thrown when saving a comment without an associated event.")
-    void testEventDoesExistWhenSavingComment(){
+    void testEventIsNotNullWhenSavingComment(){
         Comment comment = new Comment("comment", 5);
         comment.setUser(new User());
 
@@ -47,28 +47,39 @@ class CommentServiceTest {
     }
 
     @Test
-    @DisplayName("Test if user exists when saving comment")
-    @Description("This test verifies that an exception is thrown when saving a comment without an associated user.")
-    void testUserDoesExistWhenSavingComment(){
+    @DisplayName("Test if event is not empty when saving comment")
+    @Description("This test verifies that an exception is thrown when saving a comment with an empty event.")
+    void testEventIsNotEmptyWhenSavingComment(){
         Comment comment = new Comment("comment", 5);
-        comment.setEvent(new Event());
+        comment.setUser(new User());
 
         Mockito.when(commentRepository.save(comment)).thenReturn(comment);
 
-        assertThrows(IllegalArgumentException.class,() -> commentService.createComment(comment), "User does not exist");
+        assertThrows(IllegalArgumentException.class, () -> commentService.createComment(comment), "Event must not be empty");
     }
 
     @Test
-    @DisplayName("Test if event is not null when saving comment")
-    @Description("This test verifies that an exception is thrown when saving a comment with an empty event.")
-    void testEventIsNotNullWhenSavingComment(){
+    @DisplayName("Test if user is not null when saving comment")
+    @Description("This test verifies that an exception is thrown when saving a comment without an associated user.")
+    void testUserIsNotNullWhenSavingComment(){
         Comment comment = new Comment("comment", 5);
-        comment.setUser(new User());
         comment.setEvent(new Event());
 
         Mockito.when(commentRepository.save(comment)).thenReturn(comment);
 
-        assertThrows(IllegalArgumentException.class, () -> commentService.createComment(comment), "Event is empty");
+        assertThrows(IllegalArgumentException.class,() -> commentService.createComment(comment), "User must not be null");
+    }
+
+    @Test
+    @DisplayName("Test if user is not empty when saving comment")
+    @Description("This test verifies that an exception is thrown when saving a comment with an empty user.")
+    void testUserIsNotEmptyWhenSavingComment(){
+        Comment comment = new Comment("comment", 5);
+        comment.setUser(new User());
+
+        Mockito.when(commentRepository.save(comment)).thenReturn(comment);
+
+        assertThrows(IllegalArgumentException.class,() -> commentService.createComment(comment), "User must not be empty");
     }
 
     @Test
@@ -137,9 +148,13 @@ class CommentServiceTest {
     public void testListComment(){
         Long eventId = 1L;
         List<Comment> outputComments = new ArrayList<>();
-        outputComments.add(new Comment("comment 1", 5));
-        outputComments.add(new Comment("comment 2", 3));
+        Comment comment = new Comment("text", 10);
+        comment.setEvent(new Event("name",LocalDateTime.now(),"address", "description"));
+        comment.setUser(new User("firstname","lastname","yns@gmail.com","password"));
+        outputComments.add(comment);
+        outputComments.add(comment);
 
+        Mockito.when(eventService.findById(eventId)).thenReturn(new Event());
         Mockito.when(commentRepository.show(eventId)).thenReturn(outputComments);
 
         List<Comment> result = commentService.ListComment(eventId);

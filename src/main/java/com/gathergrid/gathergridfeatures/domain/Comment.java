@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "comments")
 public class Comment {
@@ -69,5 +71,18 @@ public class Comment {
 
     public void setRating(int rating) {
         this.rating = rating;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return id == comment.id && rating == comment.rating && Objects.equals(text, comment.text) && Objects.equals(user, comment.user) && Objects.equals(event, comment.event);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, text, rating, user, event);
     }
 }
